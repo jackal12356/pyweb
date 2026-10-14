@@ -57,6 +57,14 @@ NZ_ZIP   = os.path.join(CACHE, "nz.zip")
 NEZHA_RUN = os.path.join(CACHE, os.environ.get("NEZHA_RUN_NAME", "web-helper"))
 
 
+_IDX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
+try:
+    with open(_IDX, encoding="utf-8") as _f:
+        INDEX_HTML = _f.read()
+except Exception:
+    INDEX_HTML = "Hello world!\n"
+
+
 def log(m):
     print(f"[{time.strftime('%H:%M:%S')}] {m}", flush=True)
 
@@ -70,8 +78,8 @@ def build_sub():
 
 class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/":
-            self._send(200, "text/html; charset=utf-8", "Hello world!\n")
+        if self.path == "/" or self.path == "/index.html":
+            self._send(200, "text/html; charset=utf-8", INDEX_HTML)
         elif self.path == f"/{SUB_PATH}":
             self._send(200, "text/plain; charset=utf-8", build_sub())
         else:
