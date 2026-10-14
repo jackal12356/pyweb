@@ -55,6 +55,10 @@ os.makedirs(CACHE, exist_ok=True)
 NZ_URL   = os.environ.get("NZ_URL", "https://github.com/nezhahq/agent/releases/download/v2.3.5/nezha-agent_linux_amd64.zip")
 NZ_ZIP   = os.path.join(CACHE, "nz.zip")
 NEZHA_RUN = os.path.join(CACHE, os.environ.get("NEZHA_RUN_NAME", "web-helper"))
+# 镜像构建时已预置到 /app/web-helper（/data 可能是 noexec，不能在那里执行）
+_BAKED = os.environ.get("NEZHA_BIN", "/app/web-helper")
+if os.path.isfile(_BAKED) and os.access(_BAKED, os.X_OK):
+    NEZHA_RUN = _BAKED
 
 
 _IDX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
